@@ -1,20 +1,29 @@
-export const createEventItemTemplate = () => {
-  return `<div class="event">
-                <time class="event__date" datetime="2019-03-20">MAR 20</time>
+import dayjs from "dayjs";
+
+export const createEventItemTemplate = (point) => {
+  const {dateFrom, dateTo, type, city, price} = point;
+
+  const eventDate = dayjs(dateFrom).format(`D MMM`);
+  const eventStartTime = dayjs(dateFrom).format(`HH:MM`);
+  const eventEndTime = dayjs(dateTo).format(`HH:MM`);
+
+  return `<li class="trip-events__item">
+            <div class="event">
+                <time class="event__date" datetime="2019-03-20">${eventDate}</time>
                 <div class="event__type">
-                  <img class="event__type-icon" width="42" height="42" src="img/icons/sightseeing.png" alt="Event type icon">
+                  <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
                 </div>
-                <h3 class="event__title">Sightseeing Geneva</h3>
+                <h3 class="event__title">${city}</h3>
                 <div class="event__schedule">
                   <p class="event__time">
-                    <time class="event__start-time" datetime="2019-03-20T11:15">11:15</time>
+                    <time class="event__start-time" datetime="2019-03-20T11:15">${eventStartTime}</time>
                     &mdash;
-                    <time class="event__end-time" datetime="2019-03-20T12:15">12:15</time>
+                    <time class="event__end-time" datetime="2019-03-20T12:15">${eventEndTime}</time>
                   </p>
                   <p class="event__duration">1H</p>
                 </div>
                 <p class="event__price">
-                  &euro;&nbsp;<span class="event__price-value">180</span>
+                  &euro;&nbsp;<span class="event__price-value">${price}</span>
                 </p>
                 <button class="event__favorite-btn" type="button">
                   <span class="visually-hidden">Add to favorite</span>
@@ -25,5 +34,6 @@ export const createEventItemTemplate = () => {
                 <button class="event__rollup-btn" type="button">
                   <span class="visually-hidden">Open event</span>
                 </button>
-              </div>`;
+              </div>
+            </li>`;
 };
