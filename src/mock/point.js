@@ -1,7 +1,8 @@
+import {EVENT_TYPES} from "../const/const";
+
 const MAX_DESCRIPTION_SENTENCES = 5;
 const MIN_DESCRIPTION_SENTENCES = 1;
 
-const EVENT_TYPES = [`taxi`, `bus`, `train`, `ship`, `transport`, `drive`, `flight`, `check-in`, `sightseeing`, `restaurant`];
 const CITIES = [`Jerusalem`, `Haifa`, `Be'er-Sheva`, `Eilat`, `Tiberias`, `Tel-Aviv`, `Ashdod`, `Ashkelon`];
 
 const Time = {
@@ -60,8 +61,6 @@ const getRandomType = () => {
   return EVENT_TYPES[randomIndex];
 }; // Генерирует случайный тип
 
-const msToISO = (ms) => new Date(ms).toISOString(); // Возвращает строку в формате ISO
-
 const getEventDates = makeEventDatesGenerator({Y: 2018, M: 11, D: 11});
 
 const {dateFrom, dateTo} = getEventDates(getRandomHourInterval(23, 100));
@@ -107,11 +106,10 @@ const getRandomPrice = () => {
 const generatePoint = () => {
   return {
     type: getRandomType(),
-    city: getRandomCity(),
-    dateFrom: msToISO(dateFrom),
-    dateTo: msToISO(dateTo),
+    dateFrom: new Date(dateFrom),
+    dateTo: new Date(dateTo),
     destination: {
-      name: `destination name`,
+      name: getRandomCity(),
       description: getRandomDescription(),
       pictures: getPhotos(),
     },
@@ -122,5 +120,5 @@ const generatePoint = () => {
 };
 
 export {
-  EVENT_TYPES, generatePoint, getPhotos
+  generatePoint, getPhotos, CITIES
 };

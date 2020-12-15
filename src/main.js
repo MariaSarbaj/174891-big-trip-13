@@ -3,8 +3,8 @@ import {createTripCostTemplate} from "./view/trip-cost";
 import {createMenuTemplate} from "./view/menu";
 import {createTripFilterTemplate} from "./view/filter";
 import {createTripSortTemplate} from "./view/sorting";
-import {createEventItemTemplate} from "./view/event-item";
-import {createEditPointTemplate} from "./view/event-edit";
+import {createEventItemTemplate} from "./view/event-item/event-item";
+import {createEditPointTemplate} from "./view/event-edit/event-edit";
 import {generatePoint} from "./mock/point";
 
 const TRIP_POINTS_NUMBER = 15;
