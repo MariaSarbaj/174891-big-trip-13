@@ -1,16 +1,16 @@
-import {eventTypeToUpperCase} from "../../utils/event-type-to-uppercase";
-import {generateEventDate, generateEventStartTime, generateEventEndTime} from "../../utils/date";
+import {stringToUppercase} from "../../utils/string-to-uppercase";
+import {formatEventDate, formatEventTime} from "../../utils/date";
 import {renderTripEventOffers} from "./render-offers-in-item";
 
 export const createEventItemTemplate = (point) => {
   const {dateFrom, dateTo, type, destination, price, isFavorite, offers} = point;
 
-  const eventTypeUpperCase = eventTypeToUpperCase(type);
-  const eventDate = generateEventDate(dateFrom);
-  const eventStartTime = generateEventStartTime(dateFrom);
-  const eventEndTime = generateEventEndTime(dateTo);
+  const eventTypeUpperCase = stringToUppercase(type);
+  const eventDate = formatEventDate(dateFrom);
+  const eventStartTime = formatEventTime(dateFrom);
+  const eventEndTime = formatEventTime(dateTo);
 
-  const eventOffers = offers !== null ? renderTripEventOffers(offers) : ``;
+  const eventOffers = offers.length !== 0 ? renderTripEventOffers(offers) : ``;
 
   const buttonFavoriteActive = isFavorite ? ` event__favorite-btn--active` : ``;
 
@@ -20,7 +20,7 @@ export const createEventItemTemplate = (point) => {
                 <div class="event__type">
                   <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
                 </div>
-                <h3 class="event__title">${eventTypeUpperCase} to ${destination.name}</h3>
+                <h3 class="event__title">${eventTypeUpperCase} ${destination.name}</h3>
                 <div class="event__schedule">
                   <p class="event__time">
                     <time class="event__start-time" datetime="${dateFrom.toISOString()}}">${eventStartTime}</time>

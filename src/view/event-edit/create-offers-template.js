@@ -1,7 +1,7 @@
-const renderEventOffers = (offers, price) => {
+const createEventOffers = (offers) => {
 
   return offers.map((offer, index) => {
-    const {id, title} = offer;
+    const {id, title, price} = offer;
     const isChecked = Math.random() > 0.5;
 
     return (
@@ -20,16 +20,16 @@ const renderEventOffers = (offers, price) => {
     .join(``);
 };
 
-const renderOffers = (offers) => {
-  const eventOffers = renderEventOffers(offers);
+const createOffersTemplate = (offers) => {
+  const eventOffersTemplate = createEventOffers(offers);
   return (
     `<section class="event__section  event__section--offers">
       <h3 class="event__section-title  event__section-title--offers">Offers</h3>
       <div class="event__available-offers">
-        ${eventOffers}
+        ${eventOffersTemplate}
       </div>
     </section>`.trim()
   );
 };
 
-export {renderOffers};
+export {createOffersTemplate};

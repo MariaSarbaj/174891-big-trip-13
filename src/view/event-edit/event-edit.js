@@ -1,19 +1,19 @@
-import {EVENT_TYPES} from "../../const/const";
+import {EVENT_TYPES} from "../../const";
 import {CITIES} from "../../mock/point";
 
-import {renderTripTypesList} from "./render-trip-types-list";
-import {renderOffers} from "./render-offers";
-import {renderOptions} from "./render-options";
-import {renderDestinationSection} from "./render-destination-section";
+import {createTripTypesListTemplate} from "./create-trip-types-list-template";
+import {createOffersTemplate} from "./create-offers-template";
+import {createOptionsTemplate} from "./create-options-template";
+import {createDestinationSectionTemplate} from "./create-destination-section-template";
 
 const createEditPointTemplate = (point) => {
-  const {offers, destination, price} = point;
+  const {type, offers, destination, price} = point;
 
-  const typesListTemplate = renderTripTypesList(EVENT_TYPES);
-  const optionsTemplate = renderOptions(CITIES);
+  const typesListTemplate = createTripTypesListTemplate(EVENT_TYPES, point);
+  const optionsTemplate = createOptionsTemplate(CITIES);
 
-  const eventOffersTemplate = offers !== null ? renderOffers(offers) : ``;
-  const destinationSectionTemplate = destination.pictures !== null || destination.description !== null ? renderDestinationSection(point) : ``;
+  const eventOffersTemplate = offers.length !== 0 ? createOffersTemplate(offers) : ``;
+  const destinationSectionTemplate = destination.pictures.length !== 0 || !destination.description ? createDestinationSectionTemplate(point) : ``;
 
   return `<li class="trip-events__item">
              <form class="event event--edit" action="#" method="post">
@@ -21,7 +21,7 @@ const createEditPointTemplate = (point) => {
                   <div class="event__type-wrapper">
                     <label class="event__type  event__type-btn" for="event-type-toggle-1">
                       <span class="visually-hidden">Choose event type</span>
-                      <img class="event__type-icon" width="17" height="17" src="img/icons/flight.png" alt="Event type icon">
+                      <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
                     </label>
                     <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
@@ -38,7 +38,7 @@ const createEditPointTemplate = (point) => {
 
                   <div class="event__field-group  event__field-group--destination">
                     <label class="event__label  event__type-output" for="event-destination-1">
-                      Flight
+                      ${type}
                     </label>
                     <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.name}" list="destination-list-1">
                     <datalist id="destination-list-1">

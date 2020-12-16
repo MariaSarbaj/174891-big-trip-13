@@ -1,4 +1,4 @@
-const renderPhotos = (pictures) => {
+const createPhotosTemplate = (pictures) => {
   return pictures.map((picture) => {
     return (
       `<img class="event__photo" src="${picture}" alt="Event photo">`);
@@ -6,4 +6,4 @@ const renderPhotos = (pictures) => {
     .join(``);
 };
 
-export {renderPhotos};
+export {createPhotosTemplate};

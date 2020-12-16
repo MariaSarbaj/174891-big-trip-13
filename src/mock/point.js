@@ -1,4 +1,4 @@
-import {EVENT_TYPES} from "../const/const";
+import {EVENT_TYPES} from "../const";
 
 const MAX_DESCRIPTION_SENTENCES = 5;
 const MIN_DESCRIPTION_SENTENCES = 1;
@@ -120,5 +120,5 @@ const generatePoint = () => {
 };
 
 export {
-  generatePoint, getPhotos, CITIES
+  generatePoint, getPhotos, CITIES,
 };

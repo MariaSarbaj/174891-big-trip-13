@@ -1,16 +1,12 @@
 import dayjs from "dayjs";
 
 
-const generateEventDate = (dateFrom) => {
+const formatEventDate = (dateFrom) => {
   return dayjs(dateFrom).format(`D MMM`);
 };
 
-const generateEventStartTime = (dateFrom) => {
-  return dayjs(dateFrom).format(`HH:MM`);
+const formatEventTime = (time) => {
+  return dayjs(time).format(`HH:MM`);
 };
 
-const generateEventEndTime = (dateTo) => {
-  return dayjs(dateTo).format(`HH:MM`);
-};
-
-export {generateEventDate, generateEventStartTime, generateEventEndTime};
+export {formatEventDate, formatEventTime};

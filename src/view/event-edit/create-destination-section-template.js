@@ -1,9 +1,9 @@
-import {renderPhotos} from "./render-photos";
+import {createPhotosTemplate} from "./create-photos-template";
 
-const renderDestinationSection = (point) => {
+const createDestinationSectionTemplate = (point) => {
   const {destination} = point;
 
-  const eventPhotosTemplate = renderPhotos(destination.pictures);
+  const eventPhotosTemplate = createPhotosTemplate(destination.pictures);
 
   return (`<section class="event__section  event__section--destination">
                     <h3 class="event__section-title  event__section-title--destination">Destination</h3>
@@ -17,4 +17,4 @@ const renderDestinationSection = (point) => {
                   </section>`);
 };
 
-export {renderDestinationSection};
+export {createDestinationSectionTemplate};
