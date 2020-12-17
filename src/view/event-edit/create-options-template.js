@@ -1,6 +1,7 @@
-const createOptionsTemplate = (cities) => {
-  return cities.map((city) => {
-    return `<option value="${city}"></option>`;
+const createOptionsTemplate = (destinations) => {
+  return destinations.map((destination) => {
+    const {name} = destination;
+    return `<option value="${name}"></option>`;
   })
     .join(``);
 };

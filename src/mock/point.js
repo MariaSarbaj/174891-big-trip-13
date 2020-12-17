@@ -103,6 +103,49 @@ const getRandomPrice = () => {
   return getRandomInteger(100, 1000);
 };
 
+const destinations = [
+  {
+    name: `Jerusalem`,
+    description: getRandomDescription(),
+    pictures: getPhotos(),
+  },
+  {
+    name: `Haifa`,
+    description: getRandomDescription(),
+    pictures: getPhotos(),
+  },
+  {
+    name: `Be'er-Sheva`,
+    description: getRandomDescription(),
+    pictures: getPhotos(),
+  },
+  {
+    name: `Eilat`,
+    description: getRandomDescription(),
+    pictures: getPhotos(),
+  },
+  {
+    name: `Tiberias`,
+    description: getRandomDescription(),
+    pictures: getPhotos(),
+  },
+  {
+    name: `Tel-Aviv`,
+    description: getRandomDescription(),
+    pictures: getPhotos(),
+  },
+  {
+    name: `Ashdod`,
+    description: getRandomDescription(),
+    pictures: getPhotos(),
+  },
+  {
+    name: `Ashkelon`,
+    description: getRandomDescription(),
+    pictures: getPhotos(),
+  }
+];
+
 const generatePoint = () => {
   return {
     type: getRandomType(),
@@ -120,5 +163,5 @@ const generatePoint = () => {
 };
 
 export {
-  generatePoint, getPhotos, CITIES,
+  generatePoint, getPhotos, destinations
 };

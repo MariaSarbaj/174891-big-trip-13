@@ -1,16 +1,16 @@
-import {stringToUppercase} from "../../utils/string-to-uppercase";
+import {convertTextToUppercase} from "../../utils/convert-text-to-uppercase";
 import {formatEventDate, formatEventTime} from "../../utils/date";
-import {renderTripEventOffers} from "./render-offers-in-item";
+import {createTripEventOffersTemplate} from "./create-offers-in-item-template";
 
 export const createEventItemTemplate = (point) => {
   const {dateFrom, dateTo, type, destination, price, isFavorite, offers} = point;
 
-  const eventTypeUpperCase = stringToUppercase(type);
+  const eventTypeUpperCase = convertTextToUppercase(type);
   const eventDate = formatEventDate(dateFrom);
   const eventStartTime = formatEventTime(dateFrom);
   const eventEndTime = formatEventTime(dateTo);
 
-  const eventOffers = offers.length !== 0 ? renderTripEventOffers(offers) : ``;
+  const eventOffers = offers.length > 0 ? createTripEventOffersTemplate(offers) : ``;
 
   const buttonFavoriteActive = isFavorite ? ` event__favorite-btn--active` : ``;
 

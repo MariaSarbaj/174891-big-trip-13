@@ -5,7 +5,7 @@ import {createTripFilterTemplate} from "./view/filter";
 import {createTripSortTemplate} from "./view/sorting";
 import {createEventItemTemplate} from "./view/event-item/event-item";
 import {createEditPointTemplate} from "./view/event-edit/event-edit";
-import {generatePoint} from "./mock/point";
+import {generatePoint, destinations} from "./mock/point";
 
 const TRIP_POINTS_NUMBER = 15;
 
@@ -40,7 +40,7 @@ const eventList = document.createElement(`ul`);
 eventList.classList.add(`trip-events__list`);
 tripEvent.insertAdjacentElement(`beforeend`, eventList);
 
-render(eventList, createEditPointTemplate(points[0]), `beforeend`);
+render(eventList, createEditPointTemplate(points[0], destinations), `beforeend`);
 
 for (let i = 0; i < points.length; i++) {
   render(eventList, createEventItemTemplate(points[i]), `beforeend`);

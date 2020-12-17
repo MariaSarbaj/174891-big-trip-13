@@ -1,19 +1,18 @@
 import {EVENT_TYPES} from "../../const";
-import {CITIES} from "../../mock/point";
 
 import {createTripTypesListTemplate} from "./create-trip-types-list-template";
 import {createOffersTemplate} from "./create-offers-template";
 import {createOptionsTemplate} from "./create-options-template";
 import {createDestinationSectionTemplate} from "./create-destination-section-template";
 
-const createEditPointTemplate = (point) => {
+const createEditPointTemplate = (point, destinations) => {
   const {type, offers, destination, price} = point;
 
   const typesListTemplate = createTripTypesListTemplate(EVENT_TYPES, point);
-  const optionsTemplate = createOptionsTemplate(CITIES);
+  const optionsTemplate = createOptionsTemplate(destinations);
 
-  const eventOffersTemplate = offers.length !== 0 ? createOffersTemplate(offers) : ``;
-  const destinationSectionTemplate = destination.pictures.length !== 0 || !destination.description ? createDestinationSectionTemplate(point) : ``;
+  const eventOffersTemplate = offers.length > 0 ? createOffersTemplate(offers) : ``;
+  const destinationSectionTemplate = destination.pictures.length > 0 || destination.description !== `` ? createDestinationSectionTemplate(point) : ``;
 
   return `<li class="trip-events__item">
              <form class="event event--edit" action="#" method="post">

@@ -1,4 +1,4 @@
-const renderTripEventOffers = (offers) => {
+const createTripEventOffersTemplate = (offers) => {
   return offers.map((offer) => {
     const {title, price} = offer;
 
@@ -13,4 +13,4 @@ const renderTripEventOffers = (offers) => {
     .join(``);
 };
 
-export {renderTripEventOffers};
+export {createTripEventOffersTemplate};
