@@ -1,8 +1,10 @@
+import {createElement} from "../../utils/utils";
+
 import {convertTextToUppercase} from "../../utils/convert-text-to-uppercase";
 import {formatEventDate, formatEventTime} from "../../utils/date";
 import {createTripEventOffersTemplate} from "./create-offers-in-item-template";
 
-export const createEventItemTemplate = (point) => {
+const createEventItemTemplate = (point) => {
   const {dateFrom, dateTo, type, destination, price, isFavorite, offers} = point;
 
   const eventTypeUpperCase = convertTextToUppercase(type);
@@ -50,3 +52,26 @@ export const createEventItemTemplate = (point) => {
               </div>
             </li>`;
 };
+
+export default class EventItem {
+  constructor(eventPoint) {
+    this._element = null;
+    this._eventPoint = eventPoint;
+  }
+
+  getTemplate() {
+    return createEventItemTemplate(this._eventPoint);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

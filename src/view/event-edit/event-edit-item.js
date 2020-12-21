@@ -1,5 +1,7 @@
 import {EVENT_TYPES} from "../../const";
 
+import {createElement} from "../../utils/utils";
+
 import {createTripTypesListTemplate} from "./create-trip-types-list-template";
 import {createOffersTemplate} from "./create-offers-template";
 import {createOptionsTemplate} from "./create-options-template";
@@ -74,4 +76,26 @@ const createEditPointTemplate = (point, destinations) => {
 `;
 };
 
-export {createEditPointTemplate};
+export default class EventEditItem {
+  constructor(point, destinations) {
+    this._element = null;
+    this._point = point;
+    this._destinations = destinations;
+  }
+
+  getTemplate() {
+    return createEditPointTemplate(this._point, this._destinations);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
