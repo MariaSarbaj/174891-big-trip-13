@@ -54,9 +54,9 @@ const createEventItemTemplate = (point) => {
 };
 
 export default class EventItem {
-  constructor(eventPoint) {
+  constructor(point) {
     this._element = null;
-    this._eventPoint = eventPoint;
+    this._eventPoint = point;
   }
 
   getTemplate() {
