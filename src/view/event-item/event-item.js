@@ -54,13 +54,13 @@ const createEventItemTemplate = (point) => {
 };
 
 export default class EventItem {
-  constructor(eventItem) {
+  constructor(eventPoint) {
     this._element = null;
-    this._eventItem = eventItem;
+    this._eventPoint = eventPoint;
   }
 
   getTemplate() {
-    return createEventItemTemplate(this._eventItem);
+    return createEventItemTemplate(this._eventPoint);
   }
 
   getElement() {

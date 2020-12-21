@@ -3,7 +3,7 @@ export const RenderPosition = {
   BEFOREEND: `beforeend`
 };
 
-export const renderElement = (container, element, place) => {
+export const renderElement = (container, element, place = RenderPosition.BEFOREEND) => {
   switch (place) {
     case RenderPosition.AFTERBEGIN:
       container.prepend(element);
@@ -11,12 +11,14 @@ export const renderElement = (container, element, place) => {
     case RenderPosition.BEFOREEND:
       container.append(element);
       break;
+    default:
+      throw new Error(`Unknown render position: ${place}`);
   }
 };
 
 export const createElement = (template) => {
-  const newElement = document.createElement(`div`); // 1
-  newElement.innerHTML = template; // 2
+  const wrapper = document.createElement(`div`);
+  wrapper.innerHTML = template;
 
-  return newElement.firstChild; // 3
+  return wrapper.firstChild;
 };

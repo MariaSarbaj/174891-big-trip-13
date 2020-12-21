@@ -6,7 +6,7 @@ const createTripCostTemplate = () => {
             </p>`;
 };
 
-export default class TripInfo {
+export default class Sorting {
   constructor() {
     this._element = null;
   }

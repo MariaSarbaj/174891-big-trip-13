@@ -1,10 +1,10 @@
 import TripInfoView from "./view/trip-info";
 import TripCostView from "./view/trip-cost";
 import MenuView from "./view/menu";
-import TripFilterView from "./view/filter";
+import TripFilterView from "./view/trip-filter";
 import TripSortView from "./view/sorting";
 import EventItemView from "./view/event-item/event-item";
-import EventEditItemView from "./view/event-edit/event-edit";
+import EventEditItemView from "./view/event-edit/event-edit-item";
 import {generatePoint, destinations} from "./mock/point";
 import {renderElement, RenderPosition} from "./utils/utils";
 
@@ -17,10 +17,7 @@ const tripEvent = document.querySelector(`.trip-events`);
 const points = new Array(TRIP_POINTS_NUMBER).fill().map(generatePoint);
 
 // Информация о маршруте и стоимость поездки
-const tripInfo = document.createElement(`section`);
-tripInfo.classList.add(`trip-main__trip-info`, `trip-info`);
-tripMain.insertAdjacentElement(`afterbegin`, tripInfo);
-
+const tripInfo = document.querySelector(`.trip-info`);
 renderElement(tripInfo, new TripInfoView().getElement(), RenderPosition.BEFOREEND);
 renderElement(tripInfo, new TripCostView().getElement(), RenderPosition.BEFOREEND);
 
@@ -32,21 +29,19 @@ renderElement(tripMenu, new TripFilterView().getElement(), RenderPosition.BEFORE
 renderElement(tripEvent, new TripSortView().getElement(), RenderPosition.BEFOREEND);
 
 // Список точками маршрута
-const eventList = document.createElement(`ul`);
-eventList.classList.add(`trip-events__list`);
-tripEvent.insertAdjacentElement(`beforeend`, eventList);
+const eventList = document.querySelector(`.trip-events__list`);
 
-const renderEvent = (list, point, cities) => {
+const renderEvent = (container, point) => {
   const replaceEventToEdit = () => {
-    list.replaceChild(eventEditComponent.getElement(), eventComponent.getElement());
+    container.replaceChild(eventEditComponent.getElement(), eventComponent.getElement());
   };
 
   const replaceEditToEvent = () => {
-    list.replaceChild(eventComponent.getElement(), eventEditComponent.getElement());
+    container.replaceChild(eventComponent.getElement(), eventEditComponent.getElement());
   };
 
   const eventComponent = new EventItemView(point);
-  const eventEditComponent = new EventEditItemView(point, cities);
+  const eventEditComponent = new EventEditItemView(point, destinations);
 
   eventComponent.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, () => {
     replaceEventToEdit();
@@ -57,10 +52,10 @@ const renderEvent = (list, point, cities) => {
     replaceEditToEvent();
   });
 
-  renderElement(list, eventComponent.getElement(), RenderPosition.BEFOREEND);
+  renderElement(container, eventComponent.getElement(), RenderPosition.BEFOREEND);
 
 };
 
-for (let i = 0; i < points.length; i++) {
-  renderEvent(eventList, points[i], destinations);
-}
+points.forEach((point) => {
+  renderEvent(eventList, point);
+});
