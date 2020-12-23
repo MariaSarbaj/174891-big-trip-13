@@ -1,15 +1,25 @@
+import AbstractView from "../view/abstract";
+
 export const RenderPosition = {
   AFTERBEGIN: `afterbegin`,
   BEFOREEND: `beforeend`
 };
 
-export const renderElement = (container, element, place = RenderPosition.BEFOREEND) => {
+export const renderElement = (container, child, place = RenderPosition.BEFOREEND) => {
+  if (container instanceof AbstractView) {
+    container = container.getElement();
+  }
+
+  if (child instanceof AbstractView) {
+    child = child.getElement();
+  }
+
   switch (place) {
     case RenderPosition.AFTERBEGIN:
-      container.prepend(element);
+      container.prepend(child);
       break;
     case RenderPosition.BEFOREEND:
-      container.append(element);
+      container.append(child);
       break;
     default:
       throw new Error(`Unknown render position: ${place}`);
@@ -22,3 +32,31 @@ export const createElement = (template) => {
 
   return wrapper.firstChild;
 };
+
+export const replace = (newChild, oldChild) => {
+  if (oldChild instanceof AbstractView) {
+    oldChild = oldChild.getElement();
+  }
+
+  if (newChild instanceof AbstractView) {
+    newChild = newChild.getElement();
+  }
+
+  const parent = oldChild.parentElement;
+
+  if (parent === null || newChild === null) {
+    throw new Error(`Can't replace unexisting elements`);
+  }
+
+  parent.replaceChild(newChild, oldChild);
+};
+
+export const remove = (component) => {
+  if (!(component instanceof AbstractView)) {
+    throw new Error(`Can remove only components`);
+  }
+
+  component.getElement().remove();
+  component.removeElement();
+};
+

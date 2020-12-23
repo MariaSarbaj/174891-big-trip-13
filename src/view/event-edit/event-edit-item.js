@@ -1,6 +1,6 @@
 import {EVENT_TYPES} from "../../const";
 
-import {createElement} from "../../utils/utils";
+import AbstractView from "../abstract";
 
 import {createTripTypesListTemplate} from "./create-trip-types-list-template";
 import {createOffersTemplate} from "./create-offers-template";
@@ -76,26 +76,26 @@ const createEditPointTemplate = (point, destinations) => {
 `;
 };
 
-export default class EventEditItem {
+export default class EventEditItem extends AbstractView {
   constructor(point, destinations) {
-    this._element = null;
+    super();
     this._point = point;
     this._destinations = destinations;
+
+    this._formSubmitHandler = this._formSubmitHandler.bind(this);
   }
 
   getTemplate() {
     return createEditPointTemplate(this._point, this._destinations);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  setFormSubmitHandler(callback) {
+    this._callback.submitForm = callback;
+    this.getElement().querySelector(`form`).addEventListener(`submit`, this._formSubmitHandler);
   }
 
-  removeElement() {
-    this._element = null;
+  _formSubmitHandler(evt) {
+    evt.preventDefault();
+    this._callback.submitForm();
   }
 }

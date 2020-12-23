@@ -1,4 +1,4 @@
-import {createElement} from "../../utils/utils";
+import AbstractView from "../abstract";
 import {createTripInfoTemplate} from "./trip-info";
 import {createTripCostTemplate} from "./trip-cost";
 
@@ -9,24 +9,8 @@ const createTripInfoSectionTemplate = () => {
           </section>`;
 };
 
-export default class TripInfoSection {
-  constructor() {
-    this._element = null;
-  }
-
+export default class TripInfoSection extends AbstractView {
   getTemplate() {
     return createTripInfoSectionTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
