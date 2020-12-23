@@ -1,4 +1,4 @@
-import AbstractView from "../abstract-view";
+import AbstractView from "../abstract";
 import {createTripInfoTemplate} from "./trip-info";
 import {createTripCostTemplate} from "./trip-cost";
 

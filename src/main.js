@@ -32,11 +32,11 @@ const renderEvent = (container, point) => {
     replace(eventComponent, eventEditComponent);
   };
 
-  const onEscKeyDown = (evt) => {
+  const onFormEscKeyDown = (evt) => {
     if (evt.key === `Escape` || evt.key === `Esc`) {
       evt.preventDefault();
       replaceEditToEvent();
-      document.removeEventListener(`keydown`, onEscKeyDown);
+      document.removeEventListener(`keydown`, onFormEscKeyDown);
     }
   };
 
@@ -45,12 +45,12 @@ const renderEvent = (container, point) => {
 
   eventComponent.setEditClickHandler(() => {
     replaceEventToEdit();
-    document.addEventListener(`keydown`, onEscKeyDown);
+    document.addEventListener(`keydown`, onFormEscKeyDown);
   });
 
   eventEditComponent.setFormSubmitHandler(() => {
     replaceEditToEvent();
-    document.removeEventListener(`keydown`, onEscKeyDown);
+    document.removeEventListener(`keydown`, onFormEscKeyDown);
   });
 
   renderElement(container, eventComponent, RenderPosition.BEFOREEND);
