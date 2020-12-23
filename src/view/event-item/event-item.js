@@ -1,4 +1,4 @@
-import {createElement} from "../../utils/utils";
+import AbstractView from "../abstract-view";
 
 import {convertTextToUppercase} from "../../utils/convert-text-to-uppercase";
 import {formatEventDate, formatEventTime} from "../../utils/date";
@@ -53,25 +53,25 @@ const createEventItemTemplate = (point) => {
             </li>`;
 };
 
-export default class EventItem {
+export default class EventItem extends AbstractView {
   constructor(point) {
-    this._element = null;
+    super();
     this._eventPoint = point;
+
+    this._editClickHandler = this._editClickHandler.bind(this);
   }
 
   getTemplate() {
     return createEventItemTemplate(this._eventPoint);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  _editClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.editClick();
   }
 
-  removeElement() {
-    this._element = null;
+  setEditClickHandler(callback) {
+    this._callback.editClick = callback;
+    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._editClickHandler);
   }
 }
