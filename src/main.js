@@ -7,6 +7,7 @@ import EventEditItemView from "./view/event-edit/event-edit-item";
 import NoEventView from "./view/no-event";
 import {generatePoint, destinations} from "./mock/point";
 import {renderElement, RenderPosition, replace} from "./utils/utils";
+import pageLayout from "./presenter/list";
 
 const TRIP_POINTS_NUMBER = 15;
 
@@ -48,7 +49,7 @@ const renderEvent = (container, point) => {
     document.addEventListener(`keydown`, onFormEscKeyDown);
   });
 
-  eventEditComponent.setFormSubmitHandler(() => {
+  eventEditComponent.setOnFormSubmit(() => {
     replaceEditToEvent();
     document.removeEventListener(`keydown`, onFormEscKeyDown);
   });
