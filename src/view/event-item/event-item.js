@@ -58,20 +58,31 @@ export default class EventItem extends AbstractView {
     super();
     this._eventPoint = point;
 
-    this._onRollupButtonClick = this._editClickHandler.bind(this);
+    this._onRollupButtonClick = this._onRollupButtonClick.bind(this);
+    this._onFavoriteClick = this._onFavoriteClick.bind(this);
   }
 
   getTemplate() {
     return createEventItemTemplate(this._eventPoint);
   }
 
-  setEditClickHandler(callback) {
+  setOnRollupButtonClick(callback) {
     this._callback.clickToEdit = callback;
     this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._onRollupButtonClick);
   }
 
-  _editClickHandler(evt) {
+  _onRollupButtonClick(evt) {
     evt.preventDefault();
     this._callback.clickToEdit();
+  }
+
+  setOnFavoriteClick(callback) {
+    this._callback.clickToFavorite = callback;
+    this.getElement().querySelector(`.event__favorite-btn`).addEventListener(`click`, this._onFavoriteClick);
+  }
+
+  _onFavoriteClick(evt) {
+    evt.preventDefault();
+    this._callback.clickToFavorite();
   }
 }
