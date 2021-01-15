@@ -5,7 +5,7 @@ export const RenderPosition = {
   BEFOREEND: `beforeend`
 };
 
-export const renderElement = (container, child, place = RenderPosition.BEFOREEND) => {
+export const render = (container, child, place = RenderPosition.BEFOREEND) => {
   if (container instanceof AbstractView) {
     container = container.getElement();
   }
@@ -46,7 +46,7 @@ export const replace = (newChild, oldChild) => {
     throw new Error(`Can't replace unexisting elements`);
   }
 
-  oldChild.replaceChild(newChild);
+  oldChild.replaceWith(newChild);
 };
 
 export const remove = (component) => {
@@ -58,3 +58,16 @@ export const remove = (component) => {
   component.removeElement();
 };
 
+export const updateItem = (items, update) => {
+  const index = items.findIndex((item) => item.id === update.id);
+
+  if (index === -1) {
+    return items;
+  }
+
+  return [
+    ...items.slice(0, index),
+    update,
+    ...items.slice(index + 1)
+  ];
+};
