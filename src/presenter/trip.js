@@ -2,7 +2,7 @@ import {render, RenderPosition} from "../utils/utils";
 import NoEventView from "../view/no-event";
 import TripSortView from "../view/trip-sort";
 import PointPresenter from "./point";
-import {updateItem} from "../utils/utils";
+import {updateItemById} from "../utils/utils";
 
 export default class Trip {
   constructor(container) {
@@ -16,9 +16,9 @@ export default class Trip {
     this._tripSortView = new TripSortView();
   }
 
-  render(points) {
+  init(points, destinations) {
     this._points = points.slice();
-    this._pointPresenter = new PointPresenter(this._container, this._handlePointChange, this._handleModeChange());
+    this._destinations = destinations.slice();
 
     if (points.length === 0) {
       render(this._container, new NoEventView());
@@ -28,14 +28,20 @@ export default class Trip {
       render(this._container, this._tripSortView, RenderPosition.AFTERBEGIN);
 
       points.forEach((point) => {
-        this._pointPresenter.init(point);
+        this._renderPoint(point);
       });
     }
   }
 
+  _renderPoint(point) {
+    const pointPresenter = new PointPresenter(this._container, this._handlePointChange, this._handleModeChange);
+    pointPresenter.init(point, this._destinations);
+    this._pointPresenter[point.id] = pointPresenter;
+  }
+
   _handlePointChange(updatedPoint) {
-    this._points = updateItem(this._points, updatedPoint);
-    this._pointPresenter[updatedPoint.id].render(updatedPoint);
+    this._points = updateItemById(this._points, updatedPoint);
+    this._pointPresenter[updatedPoint.id].init(updatedPoint, this._destinations);
   }
 
   _handleModeChange() {

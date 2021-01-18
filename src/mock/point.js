@@ -146,6 +146,8 @@ const destinations = [
   }
 ];
 
+const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
+
 const generatePoint = () => {
   return {
     type: getRandomType(),
@@ -159,6 +161,7 @@ const generatePoint = () => {
     offers: eventOffers,
     price: getRandomPrice(),
     isFavorite: Boolean(getRandomInteger(0, 1)),
+    id: generateId(),
   };
 };
 

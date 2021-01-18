@@ -1,6 +1,6 @@
 import MenuView from "./view/menu";
 import TripFilterView from "./view/trip-filter";
-import {generatePoint} from "./mock/point";
+import {destinations, generatePoint} from "./mock/point";
 import {render, RenderPosition} from "./utils/utils";
 import TripPresenter from "./presenter/trip";
 
@@ -19,4 +19,4 @@ render(tripMenu, new TripFilterView(), RenderPosition.BEFOREEND);
 const eventList = document.querySelector(`.trip-events__list`);
 
 const tripPresenter = new TripPresenter(eventList);
-tripPresenter.render(points);
+tripPresenter.init(points, destinations);
