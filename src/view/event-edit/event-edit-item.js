@@ -82,19 +82,19 @@ export default class EventEditItem extends AbstractView {
     this._point = point;
     this._destinations = destinations;
 
-    this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._onFormSubmit = this._onFormSubmit.bind(this);
   }
 
   getTemplate() {
     return createEditPointTemplate(this._point, this._destinations);
   }
 
-  setFormSubmitHandler(callback) {
+  setOnFormSubmit(callback) {
     this._callback.submitForm = callback;
-    this.getElement().querySelector(`form`).addEventListener(`submit`, this._formSubmitHandler);
+    this.getElement().querySelector(`form`).addEventListener(`submit`, this._onFormSubmit);
   }
 
-  _formSubmitHandler(evt) {
+  _onFormSubmit(evt) {
     evt.preventDefault();
     this._callback.submitForm();
   }

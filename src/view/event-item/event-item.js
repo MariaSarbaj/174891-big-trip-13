@@ -56,22 +56,33 @@ const createEventItemTemplate = (point) => {
 export default class EventItem extends AbstractView {
   constructor(point) {
     super();
-    this._eventPoint = point;
+    this._point = point;
 
-    this._onRollupButtonClick = this._editClickHandler.bind(this);
+    this._onRollupButtonClick = this._onRollupButtonClick.bind(this);
+    this._onFavoriteButtonClick = this._onFavoriteButtonClick.bind(this);
   }
 
   getTemplate() {
-    return createEventItemTemplate(this._eventPoint);
+    return createEventItemTemplate(this._point);
   }
 
-  setEditClickHandler(callback) {
+  setOnRollupButtonClick(callback) {
     this._callback.clickToEdit = callback;
     this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._onRollupButtonClick);
   }
 
-  _editClickHandler(evt) {
+  setOnFavoriteButtonClick(callback) {
+    this._callback.clickToFavorite = callback;
+    this.getElement().querySelector(`.event__favorite-btn`).addEventListener(`click`, this._onFavoriteButtonClick);
+  }
+
+  _onRollupButtonClick(evt) {
     evt.preventDefault();
     this._callback.clickToEdit();
+  }
+
+  _onFavoriteButtonClick(evt) {
+    evt.preventDefault();
+    this._callback.clickToFavorite();
   }
 }
