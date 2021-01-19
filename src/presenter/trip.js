@@ -27,17 +27,7 @@ export default class Trip {
 
     this._destinations = destinations.slice();
 
-    if (points.length === 0) {
-      render(this._container, new NoEventView());
-    } else {
-
-      // Сортировка
-      render(this._container, this._tripSortView, RenderPosition.AFTERBEGIN);
-
-      points.forEach((point) => {
-        this._renderPoint(point);
-      });
-    }
+    this._renderTrip();
   }
 
   _renderPoint(point) {
@@ -59,6 +49,7 @@ export default class Trip {
 
   _renderSort() {
     this._tripSortView.setOnSortTypeChange(this._handleSortTypeChange);
+    render(this._container, this._tripSortView, RenderPosition.AFTERBEGIN);
   }
 
   _sortPoints(sortType) {
@@ -83,5 +74,30 @@ export default class Trip {
     }
 
     this._sortPoints(sortType);
+    this._clearPointsList();
+    this._renderPointsList();
+  }
+
+  _renderPointsList() {
+    this._points.forEach((point) => {
+      this._renderPoint(point);
+    });
+  }
+
+  _renderTrip() {
+    if (this._points.length === 0) {
+      render(this._container, new NoEventView());
+    } else {
+
+      this._renderSort();
+      this._renderPointsList();
+    }
+  }
+
+  _clearPointsList() {
+    Object
+      .values(this._pointPresenter)
+      .forEach((presenter) => presenter.destroy());
+    this._pointPresenter = {};
   }
 }

@@ -47,11 +47,11 @@ export default class TripSort extends AbstractView {
     }
 
     evt.preventDefault();
-    this._callback.sortTypeChange(evt.target.htmlFor);
+    this._callback.changeSortType(evt.target.htmlFor);
   }
 
   setOnSortTypeChange(callback) {
-    this._callback.sortTypeChange = callback;
+    this._callback.changeSortType = callback;
     this.getElement().addEventListener(`click`, this._onSortTypeChange);
   }
 }
