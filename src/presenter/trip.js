@@ -27,7 +27,7 @@ export default class Trip {
 
     this._destinations = destinations.slice();
 
-    this._renderTrip();
+    this._renderRoute();
   }
 
   _renderPoint(point) {
@@ -84,7 +84,7 @@ export default class Trip {
     });
   }
 
-  _renderTrip() {
+  _renderRoute() {
     if (this._points.length === 0) {
       render(this._container, new NoEventView());
     } else {
