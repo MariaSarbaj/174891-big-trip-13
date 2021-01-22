@@ -5,14 +5,14 @@ import {formatEventDate, formatEventTime} from "../../utils/date";
 import {createTripEventOffersTemplate} from "./create-offers-in-item-template";
 
 const createEventItemTemplate = (point) => {
-  const {dateFrom, dateTo, type, destination, price, isFavorite, offers} = point;
+  const {dateFrom, dateTo, type, destination, price, isFavorite, activeOffers} = point;
 
   const eventTypeUpperCase = convertTextToUppercase(type);
   const eventDate = formatEventDate(dateFrom);
   const eventStartTime = formatEventTime(dateFrom);
   const eventEndTime = formatEventTime(dateTo);
 
-  const eventOffers = offers.length > 0 ? createTripEventOffersTemplate(offers) : ``;
+  const eventOffers = activeOffers.length > 0 ? createTripEventOffersTemplate(activeOffers) : ``;
 
   const buttonFavoriteActive = isFavorite ? ` event__favorite-btn--active` : ``;
 

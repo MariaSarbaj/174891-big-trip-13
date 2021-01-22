@@ -10,34 +10,6 @@ const Time = {
   MINUTE: 40320,
 };
 
-// const eventOffers = [
-//   {
-//     id: `comfort`,
-//     title: `Switch to comfort class`,
-//     price: 100
-//   },
-//   {
-//     id: `meal`,
-//     title: `Add meal`,
-//     price: 15
-//   },
-//   {
-//     id: `seats`,
-//     title: `Choose seats`,
-//     price: 5
-//   },
-//   {
-//     id: `train`,
-//     title: `Travel by train`,
-//     price: 40
-//   },
-//   {
-//     id: `uber`,
-//     title: `Order Uber`,
-//     price: 20
-//   },
-// ];
-
 const eventOffers = {
   'bus': [
     {
@@ -311,11 +283,31 @@ const destinations = [
 
 const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
 
+const getRandomArrayItem = (array) => {
+  const randomIndex = getRandomInteger(0, array.length);
+
+  return array[randomIndex];
+};
+
+const getRandomOffers = (offers) => {
+  const offersAmount = getRandomInteger(0, offers.length - 1);
+  const randomOffers = [];
+
+  for (let i = 0; i < offersAmount; i++) {
+    const offer = getRandomArrayItem(offers);
+    if (randomOffers.indexOf(offer) === -1) {
+      randomOffers.push(offer);
+    }
+  }
+
+  return randomOffers;
+};
+
 const generatePoint = () => {
   const type = getRandomType();
+  const activeOffers = eventOffers[type] ? getRandomOffers(eventOffers[type]) : null;
 
   return {
-    // type: getRandomType(),
     type,
     dateFrom: new Date(dateFrom),
     dateTo: new Date(dateTo),
@@ -324,8 +316,8 @@ const generatePoint = () => {
       description: getRandomDescription(),
       pictures: getPhotos(),
     },
-    // offers: eventOffers,
     offers: eventOffers[type],
+    activeOffers,
     price: getRandomPrice(),
     isFavorite: Boolean(getRandomInteger(0, 1)),
     id: generateId(),

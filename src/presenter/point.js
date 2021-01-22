@@ -44,6 +44,7 @@ export default class Point {
 
     this._eventView.setOnRollupButtonClick(this._handleRollupButtonClick);
     this._eventEditView.setOnFormSubmit(this._handleFormSubmit);
+    this._eventEditView.setOnRollupButtonClick(this._handleRollupButtonClick);
 
     this._eventView.setOnFavoriteButtonClick(this._handleFavoriteClick);
 
@@ -89,7 +90,12 @@ export default class Point {
   }
 
   _handleRollupButtonClick() {
-    this._replaceEventToEdit();
+    // this._replaceEventToEdit();
+    if (this._mode === Mode.DEFAULT) {
+      this._replaceEventToEdit();
+    } else {
+      this._replaceEditToEvent();
+    }
   }
 
   _handleFormSubmit(point) {
