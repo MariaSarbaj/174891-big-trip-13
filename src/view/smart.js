@@ -6,7 +6,7 @@ export default class Smart extends AbstractView {
     this._data = {};
   }
 
-  updateData(update, justDataUpdating) {
+  updateData(update, justDataUpdating = false) {
     if (!update) {
       return;
     }
@@ -25,7 +25,7 @@ export default class Smart extends AbstractView {
   }
 
   updateElement() {
-    let oldChild = this.getElement();
+    const oldChild = this.getElement();
     this.removeElement();
 
     const newChild = this.getElement();

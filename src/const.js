@@ -7,3 +7,8 @@ export const SortType = {
   TIME: `sort-time`,
   PRICE: `sort-price`,
 };
+
+export const Mode = {
+  DEFAULT: `DEFAULT`,
+  EDITING: `EDITING`
+};

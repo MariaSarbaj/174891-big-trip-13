@@ -10,168 +10,38 @@ const Time = {
   MINUTE: 40320,
 };
 
-const eventOffers = {
-  'bus': [
-    {
-      title: `Infotainment system`,
-      price: 50
-    },
-    {
-      title: `Order meal`,
-      price: 100
-    },
-    {
-      title: `Choose seats`,
-      price: 190
-    }
-  ],
-  'check-in': [
-    {
-      title: `Choose the time of check-in`,
-      price: 70
-    },
-    {
-      title: `Choose the time of check-out`,
-      price: 190
-    },
-    {
-      title: `Add breakfast`,
-      price: 110
-    },
-    {
-      title: `Laundry`,
-      price: 140
-    },
-    {
-      title: `Order a meal from the restaurant`,
-      price: 30
-    }
-  ],
-  'drive': [
-    {
-      title: `Choose comfort class`,
-      price: 110
-    },
-    {
-      title: `Choose business class`,
-      price: 180
-    }
-  ],
-  'flight': [
-    {
-      title: `Choose meal`,
-      price: 120
-    },
-    {
-      title: `Choose seats`,
-      price: 90
-    },
-    {
-      title: `Upgrade to comfort class`,
-      price: 120
-    },
-    {
-      title: `Upgrade to business class`,
-      price: 120
-    },
-    {
-      title: `Add luggage`,
-      price: 170
-    },
-    {
-      title: `Business lounge`,
-      price: 160
-    }
-  ],
-  'restaurant': [
-    {
-      title: `Choose live music`,
-      price: 150
-    },
-    {
-      title: `Choose VIP area`,
-      price: 70
-    }
-  ],
-  'ship': [
-    {
-      title: `Choose meal`,
-      price: 130
-    },
-    {
-      title: `Choose seats`,
-      price: 160
-    },
-    {
-      title: `Upgrade to comfort class`,
-      price: 170
-    },
-    {
-      title: `Upgrade to business class`,
-      price: 150
-    },
-    {
-      title: `Add luggage`,
-      price: 100
-    },
-    {
-      title: `Business lounge`,
-      price: 40
-    }
-  ],
-  'sightseeing': [
-    {
-      title: `Book a ticket`,
-      price: 80
-    },
-    {
-      title: `Individual excursion`,
-      price: 200
-    },
-  ],
-  'taxi': [
-    {
-      title: `Upgrade to a business class`,
-      price: 190
-    },
-    {
-      title: `Choose the radio station`,
-      price: 30
-    },
-    {
-      title: `Choose temperature`,
-      price: 170
-    },
-    {
-      title: `Drive quickly, I'm in a hurry`,
-      price: 100
-    },
-    {
-      title: `Drive slowly`,
-      price: 110
-    }
-  ],
-  'train': [
-    {
-      title: `Book a taxi at the arrival point`,
-      price: 110
-    },
-    {
-      title: `Order a breakfast`,
-      price: 80
-    },
-    {
-      title: `Wake up at a certain time`,
-      price: 140
-    }
-  ],
-  'transport': [
-    {
-      title: `Choose seats`,
-      price: 160
-    }
-  ],
-};
+const OFFERS = [
+  {
+    type: `luggage`,
+    title: `Add luggage`,
+    price: 10,
+    checked: false
+  },
+  {
+    type: `comfort`,
+    title: `Switch to comfort`,
+    price: 150,
+    checked: false
+  },
+  {
+    type: `meal`,
+    title: `Add meal`,
+    price: 2,
+    checked: false
+  },
+  {
+    type: `seats`,
+    title: `Choose seats`,
+    price: 9,
+    checked: false
+  },
+  {
+    type: `train`,
+    title: `Travel by train`,
+    price: 40,
+    checked: false
+  }
+];
 
 const getRandomInteger = (a = 0, b = 1) => {
   const lower = Math.ceil(Math.min(a, b));
@@ -283,29 +153,19 @@ const destinations = [
 
 const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
 
-const getRandomArrayItem = (array) => {
-  const randomIndex = getRandomInteger(0, array.length);
+const getEventOffers = () => {
+  const eventOffers = JSON.parse(JSON.stringify(OFFERS));
 
-  return array[randomIndex];
-};
-
-const getRandomOffers = (offers) => {
-  const offersAmount = getRandomInteger(0, offers.length - 1);
-  const randomOffers = [];
-
-  for (let i = 0; i < offersAmount; i++) {
-    const offer = getRandomArrayItem(offers);
-    if (randomOffers.indexOf(offer) === -1) {
-      randomOffers.push(offer);
+  eventOffers.forEach((offer) => {
+    if (Math.random() < 0.5) {
+      offer.checked = true;
     }
-  }
-
-  return randomOffers;
+  });
+  return eventOffers;
 };
 
 const generatePoint = () => {
   const type = getRandomType();
-  const activeOffers = eventOffers[type] ? getRandomOffers(eventOffers[type]) : null;
 
   return {
     type,
@@ -316,8 +176,7 @@ const generatePoint = () => {
       description: getRandomDescription(),
       pictures: getPhotos(),
     },
-    offers: eventOffers[type],
-    activeOffers,
+    offers: getEventOffers(),
     price: getRandomPrice(),
     isFavorite: Boolean(getRandomInteger(0, 1)),
     id: generateId(),
