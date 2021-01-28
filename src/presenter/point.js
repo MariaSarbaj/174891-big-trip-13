@@ -24,6 +24,7 @@ export default class Point {
     this._onFormEscKeyDown = this._onFormEscKeyDown.bind(this);
     this._handleRollupButtonClick = this._handleRollupButtonClick.bind(this);
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
+    this._handleDeleteButtonClick = this._handleDeleteButtonClick.bind(this);
 
     this._handleFavoriteButtonClick = this._handleFavoriteButtonClick.bind(this);
   }
@@ -41,6 +42,7 @@ export default class Point {
     this._eventView.setOnRollupButtonClick(this._handleRollupButtonClick);
     this._eventEditView.setOnFormSubmit(this._handleFormSubmit);
     this._eventEditView.setOnRollupButtonClick(this._handleRollupButtonClick);
+    this._eventEditView.setOnDeleteButtonClick(this._handleDeleteButtonClick);
 
     this._eventView.setOnFavoriteButtonClick(this._handleFavoriteButtonClick);
 
@@ -94,8 +96,7 @@ export default class Point {
   }
 
   _handleFormSubmit(point) {
-    const formData = this._eventEditView.getData();
-    this._changeData(this, point, formData);
+    this._changeData(point);
     this._replaceEditToEvent();
   }
 
@@ -109,6 +110,10 @@ export default class Point {
             }
         )
     );
+  }
+
+  _handleDeleteButtonClick() {
+    this._replaceEditToEvent();
   }
 
   _onFormEscKeyDown(evt) {

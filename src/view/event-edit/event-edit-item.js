@@ -1,4 +1,4 @@
-import {EVENT_TYPES, Mode} from "../../const";
+import {EVENT_TYPES} from "../../const";
 
 import SmartView from "../smart";
 
@@ -7,27 +7,21 @@ import {createOffersTemplate} from "./create-offers-template";
 import {createOptionsTemplate} from "./create-options-template";
 import {createPhotosTemplate} from "./create-photos-template";
 
-const DefaultData = {
-  deleteButtonText: `Delete`,
-  saveButtonText: `Save`,
-  isBlocked: false,
-  isVisibleOffers: true,
-  isVisibleDestination: true
+const ButtonText = {
+  DELETE: `Delete`,
+  SAVE: `Save`,
 };
 
-const createEditPointTemplate = (point, destinations) => {
-  const {type, offers, destination, price, id} = point;
+const createEditPointTemplate = (data, destinations) => {
+  const {type, offers, destination, price, id} = data;
+  const {isDisabled, isVisibleOffers, isVisibleDestination} = data;
 
-  const deleteButtonText = DefaultData.deleteButtonText;
-  const saveButtonText = DefaultData.saveButtonText;
-  const isVisibleOffers = DefaultData.isVisibleOffers;
-  const isVisibleDestination = DefaultData.isVisibleDestination;
-  const eventOffersTemplate = createOffersTemplate(offers, point);
 
-  const disabledElement = DefaultData.isBlocked ? `disabled` : ``;
-
-  const typesListTemplate = createTripTypesListTemplate(EVENT_TYPES, point);
+  const eventOffersTemplate = createOffersTemplate(offers, data);
+  const typesListTemplate = createTripTypesListTemplate(EVENT_TYPES, data);
   const optionsTemplate = createOptionsTemplate(destinations);
+
+  const buttonAttribute = isDisabled ? `disabled` : ``;
 
   return `<li class="trip-events__item">
              <form class="event event--edit" action="#" method="post">
@@ -76,8 +70,8 @@ const createEditPointTemplate = (point, destinations) => {
                     <input class="event__input  event__input--price" id="event-price-${id}" type="number" name="event-price" value="${price}" min="0">
                   </div>
 
-                  <button class="event__save-btn  btn  btn--blue" type="submit" ${disabledElement}>${saveButtonText}</button>
-                  <button class="event__reset-btn" type="reset" ${disabledElement}>${deleteButtonText}</button>
+                  <button class="event__save-btn  btn  btn--blue" type="submit" ${buttonAttribute}>${ButtonText.SAVE}</button>
+                  <button class="event__reset-btn" type="reset" ${buttonAttribute}>${ButtonText.DELETE}</button>
 
                   <button class="event__rollup-btn" type="button">
                     <span class="visually-hidden">Open event</span>
@@ -108,29 +102,24 @@ const createEditPointTemplate = (point, destinations) => {
 };
 
 export default class EventEditItem extends SmartView {
-  constructor(point, destinations, offers, eventMode) {
+  constructor(point, destinations) {
     super();
-    this._point = point;
+    this._data = EventEditItem.parsePointToData(point, destinations);
     this._destinations = destinations;
-    this._offers = offers;
-    this._eventMode = eventMode;
 
-    this._externalData = Object.assign({}, DefaultData,
-        {isVisibleOffers: eventMode !== Mode.EDITING},
-        {isVisibleDestination: eventMode !== Mode.EDITING}
-    );
+    this._onTypeItemChange = this._onTypeItemChange.bind(this);
+    this._onDestinationChange = this._onDestinationChange.bind(this);
+    this._onInputPriceChange = this._onInputPriceChange.bind(this);
 
     this._onFormSubmit = this._onFormSubmit.bind(this);
     this._onRollupButtonClick = this._onRollupButtonClick.bind(this);
+    this._onDeleteButtonClick = this._onDeleteButtonClick.bind(this);
+
+    this._setInnerHandlers();
   }
 
   getTemplate() {
-    return createEditPointTemplate(this._point, this._destinations, this._offers, this._eventMode, this._externalData);
-  }
-
-  getData() {
-    const formElement = this.getElement().querySelector(`form`);
-    return new FormData(formElement);
+    return createEditPointTemplate(this._data, this._destinations);
   }
 
   setOnFormSubmit(callback) {
@@ -149,26 +138,108 @@ export default class EventEditItem extends SmartView {
   }
 
   restoreHandlers() {
-    this.setOnFormSubmit(this._onFormSubmit);
-    this.setOnRollupButtonClick(this._onRollupButtonClick);
-    this._eventDataChange();
+    this.setOnFormSubmit(this._callback.submitForm);
+    this.setOnRollupButtonClick(this._callback.clickToEvent);
+    this.setOnDeleteButtonClick(this._callback.clearForm);
+
+    this._setInnerHandlers();
   }
 
-  reset() {
-    this._point = Object.assign({}, this._point);
-    this.updateData();
+  _setInnerHandlers() {
+    const element = this.getElement();
+
+    element.querySelector(`.event__type-group`).addEventListener(`change`, this._onTypeItemChange);
+    element.querySelector(`.event__input--price`).addEventListener(`change`, this._onInputPriceChange);
+    element.querySelector(`.event__input--destination`).addEventListener(`change`, this._onDestinationChange);
   }
 
-  setData(data, point) {
-    this._point = point;
-    this._externalData = Object.assign({}, DefaultData, data);
-    this.updateData();
+  _onTypeItemChange(evt) {
+    evt.preventDefault();
 
+    const typeToOffers = {
+      taxi: [
+        {type: `luggage`, title: `Add luggage`, price: 10},
+        {type: `comfort`, title: `Switch to comfort`, price: 150}
+      ],
+      train: [
+        {type: `comfort`, title: `Switch to comfort`, price: 150}
+      ],
+      bus: [
+        {type: `info`, title: `Infotainment system`, price: 50},
+        {type: `meal`, title: `Order meal`, price: 100},
+        {type: `seats`, title: `Choose seats`, price: 190}
+      ],
+      drive: [
+        {type: `comfort`, title: `Choose comfort class`, price: 110},
+        {type: `business`, title: `Choose business class`, price: 180}
+      ],
+      flight: [
+        {type: `meal`, title: `Choose meal`, price: 120},
+        {type: `seats`, title: `Choose seats`, price: 90},
+        {type: `comfort`, title: `Upgrade to comfort class`, price: 120},
+        {type: `business`, title: `Upgrade to business class`, price: 120},
+        {type: `luggage`, title: `Add luggage`, price: 170},
+        {type: `lounge`, title: `Business lounge`, price: 160}
+      ],
+      restaurant: [
+        {type: `music`, title: `Choose live music`, price: 150},
+        {type: `vip`, title: `Choose VIP area`, price: 70}
+      ],
+      ship: [
+        {type: `meal`, title: `Choose meal`, price: 130},
+        {type: `seats`, title: `Choose seats`, price: 160},
+        {type: `comfort`, title: `Upgrade to business class`, price: 170},
+        {type: `luggage`, title: `Add luggage`, price: 100},
+        {type: `lounge`, title: `Business lounge`, price: 40}
+      ],
+      sightseeing: [],
+      transport: []
+    };
+
+    const offers = typeToOffers[evt.target.value] || [];
+
+    this.updateData({
+      type: evt.target.value,
+      offers,
+      isVisibleOffers: offers.length > 0,
+    });
+  }
+
+  _onDestinationChange(evt) {
+    evt.preventDefault();
+
+    const value = evt.target.value;
+    if (value.length === 0) {
+      return;
+    }
+
+    let destination = this._destinations.find(({name}) => name === value);
+
+    if (!destination) {
+      destination = {
+        name: ``,
+        description: ``,
+        pictures: [],
+      };
+    }
+
+    this.updateData({
+      destination,
+      isVisibleDestination: Boolean(destination),
+    });
+  }
+
+  _onInputPriceChange(evt) {
+    evt.preventDefault();
+
+    this.updateData({
+      price: evt.target.valueAsNumber,
+    }, true);
   }
 
   _onFormSubmit(evt) {
     evt.preventDefault();
-    this._callback.submitForm();
+    this._callback.submitForm(EventEditItem.parseDataToPoint(this._data));
   }
 
   _onRollupButtonClick(evt) {
@@ -176,58 +247,35 @@ export default class EventEditItem extends SmartView {
     this._callback.clickToEvent();
   }
 
-  _eventDataChange() {
-    const element = this.getElement();
-    const typesList = element.querySelector(`.event__type-list`);
-    const destinationInput = element.querySelector(`.event__input--destination`);
-
-    typesList.addEventListener(`click`, (evt) => {
-      if (evt.target.tagName !== `INPUT`) {
-        return;
-      }
-
-      if (this._eventMode === Mode.EDITING) {
-        this.setData({
-          isVisibleOffers: true,
-          isVisibleDestination: this._externalData.isVisibleDestination
-        }, this._point);
-      }
-
-      const eventType = EVENT_TYPES.find((type) => type === evt.target.value);
-
-      this._point = Object.assign({}, this._point,
-          {type: eventType}
-      );
-
-      this.updateData();
-    });
-
-    destinationInput.addEventListener(`change`, (evt) => {
-      const city = evt.target.value;
-
-      const destination = this._destinations.find((it) => it.name === city);
-
-      if (this._eventMode === Mode.EDITING) {
-        this.setData({
-          isVisibleOffers: this._externalData.isVisibleOffers,
-          isVisibleDestination: true
-        }, this._point);
-      }
-
-      if (!destination) {
-        return;
-      }
-
-      this._event = Object.assign({}, this._point,
-          {name: destination.name},
-          {description: destination.description},
-          {pictures: destination.pictures}
-      );
-
-      this.updateData();
-    });
+  _onDeleteButtonClick(evt) {
+    evt.preventDefault();
+    this._callback.clearForm();
   }
 
+  static parsePointToData(point) {
+    const {destination, offers} = point;
+
+    const isVisibleDestination = destination.description.length > 0 || destination.pictures.length > 0;
+    const isVisibleOffers = offers.length > 0;
+
+    return Object.assign({},
+        point,
+        {
+          isDisabled: false,
+          isVisibleDestination,
+          isVisibleOffers,
+        });
+  }
+
+  static parseDataToPoint(pointData) {
+    pointData = Object.assign({}, pointData);
+
+    delete pointData.isDisabled;
+    delete pointData.isVisibleDestination;
+    delete pointData.isVisibleOffers;
+
+    return pointData;
+  }
 }
 
 
