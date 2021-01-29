@@ -1,7 +1,7 @@
 import AbstractView from "../abstract";
 
 import {convertTextToUppercase} from "../../utils/convert-text-to-uppercase";
-import {formatEventDate, formatEventTime} from "../../utils/date";
+import {formatEventDate, formatEventTime, formatEventDuration} from "../../utils/date";
 import {createTripEventOffersTemplate} from "./create-offers-in-item-template";
 
 const createEventItemTemplate = (point) => {
@@ -11,6 +11,7 @@ const createEventItemTemplate = (point) => {
   const eventDate = formatEventDate(dateFrom);
   const eventStartTime = formatEventTime(dateFrom);
   const eventEndTime = formatEventTime(dateTo);
+  const eventDuration = formatEventDuration(dateTo, dateFrom);
 
   const eventOffers = offers.length > 0 ? createTripEventOffersTemplate(offers) : ``;
 
@@ -29,7 +30,7 @@ const createEventItemTemplate = (point) => {
                     &mdash;
                     <time class="event__end-time" datetime="${dateTo.toISOString()}">${eventEndTime}</time>
                   </p>
-                  <p class="event__duration">1H</p>
+                  <p class="event__duration">${eventDuration}</p>
                 </div>
                 <p class="event__price">
                   &euro;&nbsp;<span class="event__price-value">${price}</span>

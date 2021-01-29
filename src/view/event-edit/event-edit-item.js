@@ -7,15 +7,17 @@ import {createOffersTemplate} from "./create-offers-template";
 import {createOptionsTemplate} from "./create-options-template";
 import {createPhotosTemplate} from "./create-photos-template";
 
+import flatpickr from "flatpickr";
+import "flatpickr/dist/flatpickr.min.css";
+
 const ButtonText = {
   DELETE: `Delete`,
   SAVE: `Save`,
 };
 
 const createEditPointTemplate = (data, destinations) => {
-  const {type, offers, destination, price, id} = data;
+  const {type, offers, destination, price, id, dateFrom, dateTo} = data;
   const {isDisabled, isVisibleOffers, isVisibleDestination} = data;
-
 
   const eventOffersTemplate = createOffersTemplate(offers, data);
   const typesListTemplate = createTripTypesListTemplate(EVENT_TYPES, data);
@@ -56,10 +58,10 @@ const createEditPointTemplate = (data, destinations) => {
 
                   <div class="event__field-group  event__field-group--time">
                     <label class="visually-hidden" for="event-start-time-${id}">From</label>
-                    <input class="event__input  event__input--time" id="event-start-time-${id}" type="text" name="event-start-time" value="19/03/19 00:00">
+                    <input class="event__input  event__input--time" id="event-start-time-${id}" type="text" name="event-start-time" value="${dateFrom}">
                     &mdash;
                     <label class="visually-hidden" for="event-end-time-${id}">To</label>
-                    <input class="event__input  event__input--time" id="event-end-time-${id}" type="text" name="event-end-time" value="19/03/19 00:00">
+                    <input class="event__input  event__input--time" id="event-end-time-${id}" type="text" name="event-end-time" value="${dateTo}">
                   </div>
 
                   <div class="event__field-group  event__field-group--price">
@@ -107,6 +109,9 @@ export default class EventEditItem extends SmartView {
     this._data = EventEditItem.parsePointToData(point, destinations);
     this._destinations = destinations;
 
+    this._flatpickrFrom = null;
+    this._flatpickrTo = null;
+
     this._onTypeItemChange = this._onTypeItemChange.bind(this);
     this._onDestinationChange = this._onDestinationChange.bind(this);
     this._onInputPriceChange = this._onInputPriceChange.bind(this);
@@ -116,6 +121,7 @@ export default class EventEditItem extends SmartView {
     this._onDeleteButtonClick = this._onDeleteButtonClick.bind(this);
 
     this._setInnerHandlers();
+    this.updateData = this.updateData.bind(this);
   }
 
   getTemplate() {
@@ -143,6 +149,13 @@ export default class EventEditItem extends SmartView {
     this.setOnDeleteButtonClick(this._callback.clearForm);
 
     this._setInnerHandlers();
+    this._setFlatpickr();
+  }
+
+  removeElement() {
+    super.removeElement();
+    this._removeFlatpickrTo();
+    this._removeFlatpickrFrom();
   }
 
   _setInnerHandlers() {
@@ -151,6 +164,65 @@ export default class EventEditItem extends SmartView {
     element.querySelector(`.event__type-group`).addEventListener(`change`, this._onTypeItemChange);
     element.querySelector(`.event__input--price`).addEventListener(`change`, this._onInputPriceChange);
     element.querySelector(`.event__input--destination`).addEventListener(`change`, this._onDestinationChange);
+  }
+
+  _setFlatpickr() {
+    if (this._flatpickrFrom !== null) {
+      this._removeFlatpickrFrom();
+    }
+
+    if (this._flatpickrTo !== null) {
+      this._removeFlatpickrTo();
+    }
+
+
+    const element = this.getElement();
+    const dateFrom = element.querySelector(`[name="event-start-time"]`);
+    const dateTo = element.querySelector(`[name="event-end-time"]`);
+
+    this._flatpickrFrom = flatpickr(
+        dateFrom, {
+          enableTime: true,
+          dateFormat: `Y/m/d H:i`,
+          defaultDate: this._data.dateFrom,
+          onChange: this._onDateFromChange,
+          maxDate: this._data.dateTo
+        }
+    );
+
+    this._flatpickrTo = flatpickr(
+        dateTo, {
+          enableTime: true,
+          dateFormat: `Y-m-d H:i`,
+          defaultDate: this._data.dateTo,
+          onChange: this._onDateToChange,
+          minDate: this._data.dateFrom
+        }
+    );
+  }
+
+  _onDateFromChange([userDate]) {
+    this._flatpickrFrom.set(`maxDate`, this._data.dateFrom);
+    this.updateData({
+      dateFrom: new Date(userDate),
+    });
+  }
+
+  _onDateToChange([userDate]) {
+    this._flatpickrTo.set(`minDate`, this._data.dateTo);
+    this.updateData({
+      dateTo: new Date(userDate),
+    });
+  }
+
+  _removeFlatpickrTo() {
+    this._flatpickrTo.destroy();
+    this._flatpickrTo = null;
+  }
+
+  _removeFlatpickrFrom() {
+    this._flatpickrFrom.destroy();
+    this._flatpickrFrom = null;
   }
 
   _onTypeItemChange(evt) {
