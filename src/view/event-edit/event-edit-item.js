@@ -8,7 +8,7 @@ import {createOptionsTemplate} from "./create-options-template";
 import {createPhotosTemplate} from "./create-photos-template";
 
 import flatpickr from "flatpickr";
-import "../../../node_modules/flatpickr/dist/flatpickr.min.css";
+import "flatpickr/dist/flatpickr.min.css";
 
 const ButtonText = {
   DELETE: `Delete`,
@@ -121,7 +121,7 @@ export default class EventEditItem extends SmartView {
     this._onDeleteButtonClick = this._onDeleteButtonClick.bind(this);
 
     this._setInnerHandlers();
-    this._setFlatpickr();
+    this.updateData = this.updateData.bind(this);
   }
 
   getTemplate() {
@@ -154,12 +154,8 @@ export default class EventEditItem extends SmartView {
 
   removeElement() {
     super.removeElement();
-
-    this._flatpickrFrom.destroy();
-    this._flatpickrTo.destroy();
-
-    this._flatpickrFrom = null;
-    this._flatpickrTo = null;
+    this._removeFlatpickrTo();
+    this._removeFlatpickrFrom();
   }
 
   _setInnerHandlers() {
@@ -172,24 +168,25 @@ export default class EventEditItem extends SmartView {
 
   _setFlatpickr() {
     if (this._flatpickrFrom !== null) {
-      this._flatpickrFrom.destroy();
-      this._flatpickrFrom = null;
+      this._removeFlatpickrFrom();
     }
 
     if (this._flatpickrTo !== null) {
-      this._flatpickrTo.destroy();
-      this._flatpickrTo = null;
+      this._removeFlatpickrTo();
     }
 
-    const dateFrom = this.getElement().querySelector(`[name="event-start-time"]`);
-    const dateTo = this.getElement().querySelector(`[name="event-end-time"]`);
+
+    const element = this.getElement();
+    const dateFrom = element.querySelector(`[name="event-start-time"]`);
+    const dateTo = element.querySelector(`[name="event-end-time"]`);
 
     this._flatpickrFrom = flatpickr(
         dateFrom, {
           enableTime: true,
           dateFormat: `Y/m/d H:i`,
           defaultDate: this._data.dateFrom,
-          onChange: this._onDateChange
+          onChange: this._onDateFromChange,
+          maxDate: this._data.dateTo
         }
     );
 
@@ -198,17 +195,34 @@ export default class EventEditItem extends SmartView {
           enableTime: true,
           dateFormat: `Y-m-d H:i`,
           defaultDate: this._data.dateTo,
-          onChange: this._onDateChange,
+          onChange: this._onDateToChange,
           minDate: this._data.dateFrom
         }
     );
   }
 
-  _onDateChange([userDate]) {
+  _onDateFromChange([userDate]) {
+    this._flatpickrFrom.set(`maxDate`, this._data.dateFrom);
     this.updateData({
       dateFrom: new Date(userDate),
+    });
+  }
+
+  _onDateToChange([userDate]) {
+    this._flatpickrTo.set(`minDate`, this._data.dateTo);
+    this.updateData({
       dateTo: new Date(userDate),
     });
+  }
+
+  _removeFlatpickrTo() {
+    this._flatpickrTo.destroy();
+    this._flatpickrTo = null;
+  }
+
+  _removeFlatpickrFrom() {
+    this._flatpickrFrom.destroy();
+    this._flatpickrFrom = null;
   }
 
   _onTypeItemChange(evt) {

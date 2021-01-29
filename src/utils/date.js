@@ -1,8 +1,9 @@
 import dayjs from "dayjs";
 
-const Durations = {
-  hour: 3600000,
-  day: 86400000
+const Duration = {
+  MINUTE: 60000,
+  HOUR: 3600000,
+  DAY: 86400000
 };
 
 const formatEventDate = (dateFrom) => {
@@ -13,16 +14,33 @@ const formatEventTime = (time) => {
   return dayjs(time).format(`HH:MM`);
 };
 
+const createTimeString = (value, signString) => {
+  let timeString = ``;
+
+  if (value > 0 && value < 10) {
+    timeString = `0` + value + signString;
+  }
+
+  if (value > 10) {
+    timeString = value + signString;
+  }
+
+  return timeString;
+};
+
 const formatEventDuration = (finish, start) => {
   const eventDuration = finish - start;
-  switch (eventDuration) {
-    case (eventDuration < Durations.hour):
-      return dayjs(eventDuration).format(`HH`);
-    case (eventDuration > Durations.hour && eventDuration < Durations.day):
-      return dayjs(eventDuration).format(`HH:MM`);
-    default:
-      return dayjs(eventDuration).format(`D HH:MM`);
-  }
+
+  const eventDurationDays = Math.trunc(eventDuration / Duration.DAY);
+  const daysString = createTimeString(eventDurationDays, `D`);
+
+  const eventDurationHours = Math.trunc((eventDuration % Duration.DAY) / Duration.HOUR);
+  const hoursString = createTimeString(eventDurationHours, `H`);
+
+  const eventDurationMinutes = Math.trunc(((eventDuration % Duration.DAY) % Duration.HOUR) / Duration.MINUTE);
+  const minutesString = createTimeString(eventDurationMinutes, `M`);
+
+  return `${daysString} ${hoursString} ${minutesString}`;
 };
 
 export {formatEventDate, formatEventTime, formatEventDuration};
