@@ -1,5 +1,3 @@
-import dayjs from "dayjs";
-
 import {EVENT_TYPES} from "../../const";
 
 import SmartView from "../smart";
@@ -154,6 +152,16 @@ export default class EventEditItem extends SmartView {
     this._setFlatpickr();
   }
 
+  removeElement() {
+    super.removeElement();
+
+    this._flatpickrFrom.destroy();
+    this._flatpickrTo.destroy();
+
+    this._flatpickrFrom = null;
+    this._flatpickrTo = null;
+  }
+
   _setInnerHandlers() {
     const element = this.getElement();
 
@@ -163,42 +171,43 @@ export default class EventEditItem extends SmartView {
   }
 
   _setFlatpickr() {
-    if (this._flatpickrFrom) {
+    if (this._flatpickrFrom !== null) {
       this._flatpickrFrom.destroy();
       this._flatpickrFrom = null;
     }
 
-    if (this._flatpickrTo) {
+    if (this._flatpickrTo !== null) {
       this._flatpickrTo.destroy();
       this._flatpickrTo = null;
     }
 
-    const dateFromElement = this.getElement().querySelector(`[name="event-start-time"]`);
-    const dateToElement = this.getElement().querySelector(`[name="event-end-time"]`);
+    const dateFrom = this.getElement().querySelector(`[name="event-start-time"]`);
+    const dateTo = this.getElement().querySelector(`[name="event-end-time"]`);
 
     this._flatpickrFrom = flatpickr(
-        dateFromElement, {
+        dateFrom, {
           enableTime: true,
-          dateFormat: `Y-m-d H:i`,
+          dateFormat: `Y/m/d H:i`,
           defaultDate: this._data.dateFrom,
           onChange: this._onDateChange
         }
     );
 
     this._flatpickrTo = flatpickr(
-        dateToElement, {
+        dateTo, {
           enableTime: true,
           dateFormat: `Y-m-d H:i`,
           defaultDate: this._data.dateTo,
-          onChange: this._onDateChange
+          onChange: this._onDateChange,
+          minDate: this._data.dateFrom
         }
     );
   }
 
   _onDateChange([userDate]) {
     this.updateData({
-      dateFrom: dayjs(userDate).hour(23).minute(59).second(59).toDate(),
-      dateTo: dayjs(userDate).hour(23).minute(59).second(59).toDate(),
+      dateFrom: new Date(userDate),
+      dateTo: new Date(userDate),
     });
   }
 
