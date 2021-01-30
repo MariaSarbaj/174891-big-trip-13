@@ -1,3 +1,5 @@
+import he from "he";
+
 import {EVENT_TYPES} from "../../const";
 
 import SmartView from "../smart";
@@ -69,7 +71,7 @@ const createEditPointTemplate = (data, destinations) => {
                       <span class="visually-hidden">Price</span>
                       &euro;
                     </label>
-                    <input class="event__input  event__input--price" id="event-price-${id}" type="number" name="event-price" value="${price}" min="0">
+                    <input class="event__input  event__input--price" id="event-price-${id}" type="number" name="event-price" value="${he.encode(price)}" min="0">
                   </div>
 
                   <button class="event__save-btn  btn  btn--blue" type="submit" ${buttonAttribute}>${ButtonText.SAVE}</button>
@@ -119,9 +121,10 @@ export default class EventEditItem extends SmartView {
     this._onFormSubmit = this._onFormSubmit.bind(this);
     this._onRollupButtonClick = this._onRollupButtonClick.bind(this);
     this._onDeleteButtonClick = this._onDeleteButtonClick.bind(this);
+    this._onDateFromChange = this._onDateFromChange.bind(this);
+    this._onDateToChange = this._onDateToChange.bind(this);
 
     this._setInnerHandlers();
-    this.updateData = this.updateData.bind(this);
   }
 
   getTemplate() {
@@ -156,6 +159,16 @@ export default class EventEditItem extends SmartView {
     super.removeElement();
     this._removeFlatpickrTo();
     this._removeFlatpickrFrom();
+  }
+
+  _removeFlatpickrTo() {
+    this._flatpickrTo.destroy();
+    this._flatpickrTo = null;
+  }
+
+  _removeFlatpickrFrom() {
+    this._flatpickrFrom.destroy();
+    this._flatpickrFrom = null;
   }
 
   _setInnerHandlers() {
@@ -213,16 +226,6 @@ export default class EventEditItem extends SmartView {
     this.updateData({
       dateTo: new Date(userDate),
     });
-  }
-
-  _removeFlatpickrTo() {
-    this._flatpickrTo.destroy();
-    this._flatpickrTo = null;
-  }
-
-  _removeFlatpickrFrom() {
-    this._flatpickrFrom.destroy();
-    this._flatpickrFrom = null;
   }
 
   _onTypeItemChange(evt) {
@@ -321,7 +324,7 @@ export default class EventEditItem extends SmartView {
 
   _onDeleteButtonClick(evt) {
     evt.preventDefault();
-    this._callback.clearForm();
+    this._callback.clearForm(EventEditItem.parseDataToPoint(this._data));
   }
 
   static parsePointToData(point) {

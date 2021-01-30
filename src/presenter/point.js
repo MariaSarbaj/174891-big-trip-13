@@ -1,14 +1,7 @@
-import {remove, render, replace} from "../utils/utils";
-import {Mode} from "../const";
+import {remove, render, replace, isEscapeKey} from "../utils/utils";
+import {Mode, UserAction, UpdateType} from "../const";
 import EventItemView from "../view/event-item/event-item";
 import EventEditItemView from "../view/event-edit/event-edit-item";
-
-const KeyboardKey = {
-  ESCAPE: `Escape`,
-  ESCAPE_IE: `Esc`,
-};
-
-const isEscapeKey = (evt) => evt.key === KeyboardKey.ESCAPE || evt.key === KeyboardKey.ESCAPE_IE;
 
 export default class Point {
   constructor(container, changeData, changeMode) {
@@ -95,13 +88,19 @@ export default class Point {
     }
   }
 
-  _handleFormSubmit(point) {
-    this._changeData(point);
+  _handleFormSubmit(update) {
+    this._changeData(
+        UserAction.UPDATE_POINT,
+        UpdateType.MINOR,
+        update
+    );
     this._replaceEditToEvent();
   }
 
   _handleFavoriteButtonClick() {
     this._changeData(
+        UserAction.UPDATE_POINT,
+        UpdateType.MINOR,
         Object.assign(
             {},
             this._point,
@@ -112,8 +111,12 @@ export default class Point {
     );
   }
 
-  _handleDeleteButtonClick() {
-    this._replaceEditToEvent();
+  _handleDeleteButtonClick(point) {
+    this._changeData(
+        UserAction.DELETE_POINT,
+        UpdateType.MINOR,
+        point
+    );
   }
 
   _onFormEscKeyDown(evt) {
