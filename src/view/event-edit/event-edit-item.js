@@ -151,7 +151,6 @@ export default class EventEditItem extends SmartView {
     this.setOnDeleteButtonClick(this._callback.clearForm);
 
     this._setInnerHandlers();
-    this._setFlatpickr();
   }
 
   removeElement() {
@@ -176,6 +175,8 @@ export default class EventEditItem extends SmartView {
     element.querySelector(`.event__type-group`).addEventListener(`change`, this._onTypeItemChange);
     element.querySelector(`.event__input--price`).addEventListener(`change`, this._onInputPriceChange);
     element.querySelector(`.event__input--destination`).addEventListener(`change`, this._onDestinationChange);
+
+    this._setFlatpickr();
   }
 
   _setFlatpickr() {
@@ -205,7 +206,7 @@ export default class EventEditItem extends SmartView {
     this._flatpickrTo = flatpickr(
         dateTo, {
           enableTime: true,
-          dateFormat: `Y-m-d H:i`,
+          dateFormat: `Y/m/d H:i`,
           defaultDate: this._data.dateTo,
           onChange: this._onDateToChange,
           minDate: this._data.dateFrom

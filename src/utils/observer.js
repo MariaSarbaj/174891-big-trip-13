@@ -3,7 +3,7 @@ export default class Observer {
     this._observers = [];
   }
 
-  add(observer) {
+  attach(observer) {
     this._observers.push(observer);
   }
 

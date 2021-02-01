@@ -23,8 +23,8 @@ export default class Trip {
 
     this._sortView = null;
 
-    this._pointsModel.add(this._handleModelEvent);
-    this._filterModel.add(this._handleModelEvent);
+    this._pointsModel.attach(this._handleModelEvent);
+    this._filterModel.attach(this._handleModelEvent);
 
     this._pointNewPresenter = new PointNewPresenter(this._container, this._handleViewAction);
   }
@@ -109,7 +109,7 @@ export default class Trip {
     }
 
     this._sortView = new SortView(this._currentSortType);
-    this._sortView.setOnSortTypeChange(this._handleSortTypeChange);
+    this._sortView.setOnTypeChange(this._handleSortTypeChange);
     render(this._container, this._sortView, RenderPosition.AFTERBEGIN);
   }
 

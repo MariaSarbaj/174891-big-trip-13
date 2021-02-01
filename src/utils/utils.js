@@ -71,14 +71,14 @@ export const remove = (component) => {
 };
 
 export const getTripEventsByFilter = (points, filterType) => {
-   const nowDate = new Date();
+  const nowDate = new Date();
 
-   switch (filterType) {
-     case FilterType.FUTURE:
-       return points.filter(point => point.dateFrom > nowDate);
-     case FilterType.PAST:
-       return points.filter(point => point.dateFrom < nowDate);
-     default:
-       return points;
-   }
+  switch (filterType) {
+    case FilterType.FUTURE:
+      return points.filter((point) => point.dateFrom > nowDate);
+    case FilterType.PAST:
+      return points.filter((point) => point.dateFrom < nowDate);
+    default:
+      return points;
+  }
 };

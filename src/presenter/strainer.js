@@ -13,6 +13,10 @@ export default class Strainer {
     this._tripFilterView = null;
 
     this._handleModelEvent = this._handleModelEvent.bind(this);
+    this._handleFilterTypeChange = this._handleFilterTypeChange.bind(this);
+
+    this._pointsModel.attach(this._handleModelEvent);
+    this._filterModel.attach(this._handleModelEvent);
   }
 
   init() {
@@ -48,8 +52,6 @@ export default class Strainer {
   _getFilters() {
     this._points = this._pointsModel.get();
     return Object.values(FilterType).map((filterType) => {
-      console.log(this._points)
-
       return {
         name: filterType,
         type: getTripEventsByFilter(this._points, filterType),

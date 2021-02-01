@@ -18,7 +18,7 @@ const points = new Array(TRIP_POINTS_NUMBER).fill().map(generatePoint);
 // Инфа о поездке
 
 render(tripMain, new TripInfoSectionView(), RenderPosition.AFTERBEGIN);
-render(tripMain, new AddButtonView(), RenderPosition.BEFOREEND)
+render(tripMain, new AddButtonView(), RenderPosition.BEFOREEND);
 
 // Меню и фильтры
 render(tripMenu, new MenuView(), RenderPosition.AFTERBEGIN);
@@ -32,7 +32,7 @@ pointsModel.set(points);
 const filterModel = new FilterModel();
 
 const tripPresenter = new TripPresenter(eventList, pointsModel, filterModel);
-const filterPresenter = new StrainerPresenter(tripMain, filterModel, pointsModel);
+const filterPresenter = new StrainerPresenter(tripMenu, filterModel, pointsModel);
 
 filterPresenter.init();
 tripPresenter.init(destinations);
