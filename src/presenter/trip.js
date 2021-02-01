@@ -1,6 +1,6 @@
 import {remove, render, RenderPosition, getTripEventsByFilter} from "../utils/utils";
 import NoEventView from "../view/no-event";
-import TripSortView from "../view/trip-sort";
+import SortView from "../view/sort";
 import PointPresenter from "./point";
 import PointNewPresenter from "./point-new";
 import {SortType, UpdateType, UserAction, FilterType} from "../const";
@@ -21,10 +21,10 @@ export default class Trip {
     this._currentSortType = SortType.EVENT;
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
 
-    this._tripSortView = null;
+    this._sortView = null;
 
-    this._pointsModel.addObserver(this._handleModelEvent);
-    this._filterModel.addObserver(this._handleModelEvent);
+    this._pointsModel.add(this._handleModelEvent);
+    this._filterModel.add(this._handleModelEvent);
 
     this._pointNewPresenter = new PointNewPresenter(this._container, this._handleViewAction);
   }
@@ -39,13 +39,13 @@ export default class Trip {
 
   createPoint() {
     this._currentSortType = SortType.EVENT;
-    this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+    this._filterModel.set(UpdateType.MAJOR, FilterType.EVERYTHING);
     this._pointNewPresenter.init();
   }
 
   _getPoints() {
-    const filterType = this._filterModel.getFilter();
-    const points = this._pointsModel.getPoints();
+    const filterType = this._filterModel.get();
+    const points = this._pointsModel.get();
     const filtredPoints = getTripEventsByFilter(points, filterType);
 
     switch (this._currentSortType) {
@@ -69,13 +69,13 @@ export default class Trip {
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
       case UserAction.UPDATE_POINT:
-        this._pointsModel.updatePoint(updateType, update);
+        this._pointsModel.update(updateType, update);
         break;
       case UserAction.ADD_POINT:
-        this._pointsModel.addPoint(updateType, update);
+        this._pointsModel.add(updateType, update);
         break;
       case UserAction.DELETE_POINT:
-        this._pointsModel.deletePoint(updateType, update);
+        this._pointsModel.delete(updateType, update);
         break;
     }
   }
@@ -108,9 +108,9 @@ export default class Trip {
       this._sortComponent = null;
     }
 
-    this._tripSortView = new TripSortView(this._currentSortType);
-    this._tripSortView.setOnSortTypeChange(this._handleSortTypeChange);
-    render(this._container, this._tripSortView, RenderPosition.AFTERBEGIN);
+    this._sortView = new SortView(this._currentSortType);
+    this._sortView.setOnSortTypeChange(this._handleSortTypeChange);
+    render(this._container, this._sortView, RenderPosition.AFTERBEGIN);
   }
 
   _clearRoute({resetSortType = false} = {}) {
@@ -121,7 +121,7 @@ export default class Trip {
       .forEach((presenter) => presenter.destroy());
     this._pointPresenter = {};
 
-    remove(this._tripSortView);
+    remove(this._sortView);
     remove(this._noEventView);
 
     if (resetSortType) {

@@ -1,5 +1,3 @@
-import he from "he";
-
 import {EVENT_TYPES} from "../../const";
 
 import SmartView from "../smart";
@@ -11,6 +9,7 @@ import {createPhotosTemplate} from "./create-photos-template";
 
 import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
+import he from "he";
 
 const ButtonText = {
   DELETE: `Delete`,
@@ -52,7 +51,7 @@ const createEditPointTemplate = (data, destinations) => {
                     <label class="event__label  event__type-output" for="event-destination-${id}">
                       ${type}
                     </label>
-                    <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${destination.name}" list="destination-list-${id}">
+                    <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${he.encode(destination.name)}" list="destination-list-${id}">
                     <datalist id="destination-list-${id}">
                       ${optionsTemplate}
                     </datalist>
@@ -71,7 +70,7 @@ const createEditPointTemplate = (data, destinations) => {
                       <span class="visually-hidden">Price</span>
                       &euro;
                     </label>
-                    <input class="event__input  event__input--price" id="event-price-${id}" type="number" name="event-price" value="${he.encode(price)}" min="0">
+                    <input class="event__input  event__input--price" id="event-price-${id}" type="number" name="event-price" value="${price}" min="0">
                   </div>
 
                   <button class="event__save-btn  btn  btn--blue" type="submit" ${buttonAttribute}>${ButtonText.SAVE}</button>

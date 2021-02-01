@@ -3,7 +3,7 @@ import {getTripEventsByFilter, remove, render, RenderPosition, replace} from "..
 import {FilterType, UpdateType} from "../const";
 
 
-export default class Filter {
+export default class Strainer {
   constructor(container, filterModel, pointsModel) {
     this._container = container;
     this._filterModel = filterModel;
@@ -16,7 +16,7 @@ export default class Filter {
   }
 
   init() {
-    this._currentFilter = this._filterModel.getFilter();
+    this._currentFilter = this._filterModel.get();
 
     const filters = this._getFilters();
     const prevFilterComponent = this._tripFilterView;
@@ -42,12 +42,14 @@ export default class Filter {
       return;
     }
 
-    this._filterModel.setFilter(UpdateType.MAJOR, filterType);
+    this._filterModel.set(UpdateType.MAJOR, filterType);
   }
 
   _getFilters() {
-    this._points = this._pointsModel.getPoints();
-    this._filters = Object.values(FilterType).map((filterType) => {
+    this._points = this._pointsModel.get();
+    return Object.values(FilterType).map((filterType) => {
+      console.log(this._points)
+
       return {
         name: filterType,
         type: getTripEventsByFilter(this._points, filterType),
