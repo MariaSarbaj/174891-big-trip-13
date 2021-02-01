@@ -1,4 +1,12 @@
 import AbstractView from "../view/abstract";
+import {FilterType} from "../const";
+
+const KeyboardKey = {
+  ESCAPE: `Escape`,
+  ESCAPE_IE: `Esc`,
+};
+
+export const isEscapeKey = (evt) => evt.key === KeyboardKey.ESCAPE || evt.key === KeyboardKey.ESCAPE_IE;
 
 export const RenderPosition = {
   AFTERBEGIN: `afterbegin`,
@@ -50,6 +58,10 @@ export const replace = (newChild, oldChild) => {
 };
 
 export const remove = (component) => {
+  if (component === null) {
+    return;
+  }
+
   if (!(component instanceof AbstractView)) {
     throw new Error(`Can remove only components`);
   }
@@ -58,16 +70,15 @@ export const remove = (component) => {
   component.removeElement();
 };
 
-export const updateItemById = (items, update) => {
-  const index = items.findIndex((item) => item.id === update.id);
+export const getTripEventsByFilter = (points, filterType) => {
+  const nowDate = new Date();
 
-  if (index === -1) {
-    return items;
+  switch (filterType) {
+    case FilterType.FUTURE:
+      return points.filter((point) => point.dateFrom > nowDate);
+    case FilterType.PAST:
+      return points.filter((point) => point.dateFrom < nowDate);
+    default:
+      return points;
   }
-
-  return [
-    ...items.slice(0, index),
-    update,
-    ...items.slice(index + 1)
-  ];
 };

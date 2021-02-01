@@ -9,6 +9,7 @@ import {createPhotosTemplate} from "./create-photos-template";
 
 import flatpickr from "flatpickr";
 import "flatpickr/dist/flatpickr.min.css";
+import he from "he";
 
 const ButtonText = {
   DELETE: `Delete`,
@@ -50,7 +51,7 @@ const createEditPointTemplate = (data, destinations) => {
                     <label class="event__label  event__type-output" for="event-destination-${id}">
                       ${type}
                     </label>
-                    <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${destination.name}" list="destination-list-${id}">
+                    <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${he.encode(destination.name)}" list="destination-list-${id}">
                     <datalist id="destination-list-${id}">
                       ${optionsTemplate}
                     </datalist>
@@ -119,9 +120,10 @@ export default class EventEditItem extends SmartView {
     this._onFormSubmit = this._onFormSubmit.bind(this);
     this._onRollupButtonClick = this._onRollupButtonClick.bind(this);
     this._onDeleteButtonClick = this._onDeleteButtonClick.bind(this);
+    this._onDateFromChange = this._onDateFromChange.bind(this);
+    this._onDateToChange = this._onDateToChange.bind(this);
 
     this._setInnerHandlers();
-    this.updateData = this.updateData.bind(this);
   }
 
   getTemplate() {
@@ -149,7 +151,6 @@ export default class EventEditItem extends SmartView {
     this.setOnDeleteButtonClick(this._callback.clearForm);
 
     this._setInnerHandlers();
-    this._setFlatpickr();
   }
 
   removeElement() {
@@ -158,12 +159,24 @@ export default class EventEditItem extends SmartView {
     this._removeFlatpickrFrom();
   }
 
+  _removeFlatpickrTo() {
+    this._flatpickrTo.destroy();
+    this._flatpickrTo = null;
+  }
+
+  _removeFlatpickrFrom() {
+    this._flatpickrFrom.destroy();
+    this._flatpickrFrom = null;
+  }
+
   _setInnerHandlers() {
     const element = this.getElement();
 
     element.querySelector(`.event__type-group`).addEventListener(`change`, this._onTypeItemChange);
     element.querySelector(`.event__input--price`).addEventListener(`change`, this._onInputPriceChange);
     element.querySelector(`.event__input--destination`).addEventListener(`change`, this._onDestinationChange);
+
+    this._setFlatpickr();
   }
 
   _setFlatpickr() {
@@ -193,7 +206,7 @@ export default class EventEditItem extends SmartView {
     this._flatpickrTo = flatpickr(
         dateTo, {
           enableTime: true,
-          dateFormat: `Y-m-d H:i`,
+          dateFormat: `Y/m/d H:i`,
           defaultDate: this._data.dateTo,
           onChange: this._onDateToChange,
           minDate: this._data.dateFrom
@@ -213,16 +226,6 @@ export default class EventEditItem extends SmartView {
     this.updateData({
       dateTo: new Date(userDate),
     });
-  }
-
-  _removeFlatpickrTo() {
-    this._flatpickrTo.destroy();
-    this._flatpickrTo = null;
-  }
-
-  _removeFlatpickrFrom() {
-    this._flatpickrFrom.destroy();
-    this._flatpickrFrom = null;
   }
 
   _onTypeItemChange(evt) {
@@ -321,7 +324,7 @@ export default class EventEditItem extends SmartView {
 
   _onDeleteButtonClick(evt) {
     evt.preventDefault();
-    this._callback.clearForm();
+    this._callback.clearForm(EventEditItem.parseDataToPoint(this._data));
   }
 
   static parsePointToData(point) {

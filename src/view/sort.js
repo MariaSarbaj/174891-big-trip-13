@@ -1,7 +1,7 @@
 import AbstractView from "./abstract";
 import {SortType} from "../const";
 
-const createTripSortTemplate = () => {
+const createTemplate = () => {
   return `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
             <div class="trip-sort__item  trip-sort__item--day">
               <input id="sort-day" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-day" checked>
@@ -30,28 +30,30 @@ const createTripSortTemplate = () => {
           </form>`;
 };
 
-export default class TripSort extends AbstractView {
-  constructor() {
+export default class Sort extends AbstractView {
+  constructor(currentType) {
     super();
 
-    this._onSortTypeChange = this._onSortTypeChange.bind(this);
+    this._currentType = currentType;
+
+    this._onTypeChange = this._onTypeChange.bind(this);
   }
 
   getTemplate() {
-    return createTripSortTemplate();
+    return createTemplate(this._currentType);
   }
 
-  _onSortTypeChange(evt) {
+  _onTypeChange(evt) {
     if (evt.target.tagName !== `LABEL`) {
       return;
     }
 
     evt.preventDefault();
-    this._callback.changeSortType(evt.target.htmlFor);
+    this._callback.changeType(evt.target.htmlFor);
   }
 
-  setOnSortTypeChange(callback) {
-    this._callback.changeSortType = callback;
-    this.getElement().addEventListener(`click`, this._onSortTypeChange);
+  setOnTypeChange(callback) {
+    this._callback.changeType = callback;
+    this.getElement().addEventListener(`click`, this._onTypeChange);
   }
 }

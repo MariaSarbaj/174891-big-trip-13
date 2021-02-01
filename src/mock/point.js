@@ -184,5 +184,5 @@ const generatePoint = () => {
 };
 
 export {
-  generatePoint, getPhotos, destinations
+  generatePoint, getPhotos, destinations, generateId
 };
